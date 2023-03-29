@@ -1,0 +1,87 @@
+{{template "base" .}}
+
+{{define "title"}}Artist Page | Groupie Tracker{{end}}
+
+{{define "main"}}
+
+<div>
+    <nav>
+        <a class="link" href="/">⬅</a>
+    </nav>
+    <h2>{{.Name}}</h2>
+    <div id="members" class="container">
+      <img src="{{.Image}}" alt="Group/Artist image">
+      <br>
+      <h2>Members</h2>
+      {{range $key, $value := .Members}}
+        <p>{{$value}}</p>
+      {{end}}
+    </div>
+    <div id="creation" class="container">
+      <hr>
+      <h2>Creation Date</h2>
+      <p>{{.CreationDate}}</p>
+    </div>
+    <div id="album" class="container">
+      <hr>
+      <h2>First Album</h2>
+     <p>{{.FirstAlbum}}</p>
+    </div>
+   <div id="concerts" class="container">
+     <hr>
+      <h2>Concerts</h2>
+       <table >
+          <thead>
+           <tr>
+              <th>City-Country</th>
+             <th>Date</th>
+            </tr>
+          </thead>
+          {{range $i, $v := .Rel}}
+          <tbody>
+            <tr>
+             {{range $d, $f := $v}}
+             <td class="cities">{{$i}}</td>
+              <td>{{$f}}</td>
+            </tr>
+          </tbody>
+      {{end}}   
+        {{end}}
+       </table>
+        <br>
+        <br>
+    </div>
+    <!--Location's code-->
+    <div id="map" class="location">
+
+    </div>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=3354f25c-0c00-42ff-8206-fad39a0f313d&lang=en_UK"type="text/javascript">
+    </script>
+    
+    <script>
+    ymaps.ready(init);
+    function init() {
+        myMap = new ymaps.Map("map", {
+            center: [0, 0],
+            zoom: 1,
+        });
+        let coords = document.getElementsByClassName("cities");
+        for (let coord of coords) {
+            let newCoord = coord.innerHTML.replace(/-/g, "_");
+            newCoord = newCoord.replace(/_/g, " ");
+            console.log(newCoord);
+            let myGeocoder = ymaps.geocode(newCoord, {
+                results: 1,
+                prefLang: "eng",
+            });
+            console.log(myGeocoder);
+            myGeocoder.then(function (res) {
+                myMap.geoObjects.add(res.geoObjects);
+            });
+        }
+    }
+    </script>
+
+  </div>
+
+{{end}}
